@@ -27,14 +27,14 @@ micromamba list | grep kx
   q-kx-printf              0.0.1         h9bf148f_0        http://anaconda.org/kx/
 ```
 
-Search for available packages and list their dependencies
+Search for available kdb-x modules and list their dependencies.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*`:
 ```bash
-$ micromamba search -c kx kx* --recursive
+$ micromamba search -c kx q-kx* --recursive
 ```
 
 ### Use
 
-Set `QPATH` and launch kdb-x.
+Set `LD_LIBRARY_PATH` and `QPATH` and launch kdb-x.
 
 ```bash
 LD_LIBRARY_PATH=$CONDA_PREFIX/lib/ QPATH=$CONDA_PREFIX/q/mod:$HOME/.kx/mod/ $HOME/.kx/bin/q

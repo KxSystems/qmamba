@@ -8,7 +8,7 @@ qmamba provides a [rich set of APIs](reference.md) to:
 
 * search for packages
 * install and manage packages
-* create and manage [environments](docs/environments.md)
+* create and manage [environments](./environments.md)
 
 The qmamba APIs are mirrors of the mamba CLI commands so if you have experience using `micromamba` or `miniconda` then they should already be familiar.  But the basic APIs such as `search`, `install`, `list`, etc., are common to pretty much all package managers so anyone who has used `apt`, `yum`, `brew`, `vcpkg`, etc., can get quickly started.
 
@@ -41,7 +41,7 @@ YES               | int        0          "Automatically answer yes on prompted 
 
 Most APIs also have a shortcut which allows you to specify the most commonly used option for that operation without having to wrap it in a dictionary.  For example:
 
-* `qmamba.install enlist "package"` is the same as ``qmamba.install (enlist `SPECS)!(enlist "package")``
+* `qmamba.install enlist "package"` is the same as ``qmamba.install (enlist `SPECS)!(enlist enlist "package")``
 * `qmamba.activate "envname"` is the same as ``qmamba.activate (enlist `NAME)!(enlist "envname"))``
 * shortcuts for other APIs are detailed in the [function reference](reference.md)
 

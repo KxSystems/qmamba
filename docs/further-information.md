@@ -22,7 +22,7 @@ Using conda packages as the distribution mechanism for kdb-x modules has a numbe
 
 The basic package structure is unchanged, it contains the same files and metadata as found in any conda package.
 
-Rather the layout of the payload (the part that is installed to the *target prefix*) has been extended to include a `q/` directory under `$PREFIX`.  This directory contains the q files and any shared objects for each module (although the dependencies of such shared objects are installed to `$PREFIX/lib` as normal):
+Rather the layout of the payload (the part that is installed into the *target prefix*) has been extended to include a `q/` directory under `$PREFIX`.  This directory contains the q files and any shared objects for each module (although the dependencies of such shared objects are installed to `$PREFIX/lib` as normal):
 
 ```
 $PREFIX

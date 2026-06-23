@@ -39,7 +39,7 @@ Otherwise unpredictable results can occur if binary incompatibilities exist betw
 Are you sure you wish to continue (y/N)?
 ```
 
-This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you don't believe there will be a problem then you can answer `Y`.  To suppress this prompt set the `GUARD_IN_USE` option to `"warn"` or  `"permit"` when calling the API.
+This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you are confident there won't be a problem then you can answer `Y`.  To suppress this prompt set the `GUARD_IN_USE` option to `"warn"` or  `"permit"` when calling the API.
 
 
 
@@ -58,7 +58,7 @@ p                                                             s| m
 This may cause unpredictable results if the changes affect those modules or their dependencies.
 ```
 
-This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you don't believe there will be a problem then it can be ignored.  To suppress this warning set the `GUARD_IN_USE` option to `"permit"` when calling the API.
+This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you are confident there will be a problem then it can be ignored.  To suppress this warning set the `GUARD_IN_USE` option to `"permit"` when calling the API.
 
 
 
@@ -70,9 +70,9 @@ This warning is one of the guardrails around [potentially unsafe actions](./lear
 
 These are all permutations of the same root cause.
 
-It indicates a problem with loading the dependencies of the module as described by [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  Some suggestions:
+It indicates a problem when loading the dependencies of the module as described by [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  Some suggestions:
 
-* Did you ignore any or the guardrail prompts/warnings?
+* Did you ignore any or the guardrail prompts or warnings?
 * Did you load a module from a directory not controlled by qmamba (i.e. not from an environment)?
 * If you restart q and load just this module does the problem still occur?
 
@@ -88,15 +88,15 @@ Then try to recreate the issue in the new environment
 
 ## When I install a new package it tries to remove an existing one
 
-Likely there is a conflict in the dependency resolution - mamba can't find a suitable version of a common library which meets the dependency requirements of both packages.
+Likely there is a conflict in the dependency resolution - mamba can't find a suitable version of a common library which meets the dependency requirements of both the new package and an existing old.
 
-Rerun the install and add the options `` (`ALLOW_DOWNGRADE`ALLOW_UNINSTALL)!(1 0) ``.  This will prevent mamba removing the existing package.  Consequently it is likely that mamba will refuse to install the new package but it will display which library is causing the conflict.
+Rerun the install and add the options `` (`ALLOW_DOWNGRADE`ALLOW_UNINSTALL)!(1 0) ``.  This will prevent mamba removing the existing package.  However, it is likely that mamba will instead refuse to install the new package but it will display which library is causing the conflict.
 
 
 
 ## The operation failed but I don't understand why
 
-Try setting the `VERBOSE` option to 1, 2 or 3 (with increasing verbosity).  The extra logging will show what libmamba is doing in more detail and includes the logging from other libraries which libmamba uses such as curl.  This should make it easier to track down the source of the failure.
+Try setting the `VERBOSE` option to 1 or 2 (with increasing verbosity).  The extra logging will show what libmamba is doing in more detail and includes the logging from other libraries that libmamba uses such as curl.  This should make it easier to track down the source of the failure.
 
 
 

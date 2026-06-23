@@ -298,7 +298,7 @@ K repoquery(K subcomm, K k_options)
         format = mamba::QueryResultFormat::RecursiveTable;
       if (type == mamba::QueryType::Depends && tree)
         format = mamba::QueryResultFormat::Tree;
-      if (type == mamba::QueryType::Search && (pretty || specs_has_wildcard))
+      if (type == mamba::QueryType::Search && (pretty /* || specs_has_wildcard */)) // don't like the pretty option when using a wildcard
         format = mamba::QueryResultFormat::Pretty;
 
       bool local = options.GetIntOption<bool>(RepoqueryOptions::LOCAL);

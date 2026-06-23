@@ -22,7 +22,9 @@ It also supports having multiple independent environments into which packages ar
 
 [TODO - create releases packages]
 
-1. [Download a release]((https://github.com/KxSystems/qmamba/releases)) for your system architecture.
+It is recommend qmamba is installed using one of the release packages.
+
+1. [Download a release]((https://github.com/KxSystems/qmamba/releases)) for your OS and system architecture.
 
 2. Unzip the download.
 
@@ -44,9 +46,15 @@ It also supports having multiple independent environments into which packages ar
 
 
 
+## Quick links
+
+:point_right: [Function reference](docs/reference.md)
+
+
+
 ## Documentation
 
-For ease of use the documentation is split over over several pages which should be read in order.
+The complete set of documentation is split over over several pages for ease of readability.  Users new to qmamba should read them in order.
 
 * [Introduction](docs/introduction.md) to qmamba
 * Basic [concepts](docs/concepts.md) such as packages, channels and environments
@@ -60,7 +68,7 @@ For ease of use the documentation is split over over several pages which should 
 
 ## Status
 
-The qmamba interface is provided here under an Apache 2.0 license.
+The qmamba interface is provided here under an [Apache 2.0 license](./LICENSE).  It is build using libmamba and its licenses are included in the [licenses](./licenses/) folder.
 
 If you find issues with the interface or have feature requests, please consider [raising an issue](https://github.com/KxSystems/qmamba/issues).
 

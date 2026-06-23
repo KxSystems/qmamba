@@ -34,12 +34,12 @@ When you `use` a module containing a shared object, that shared object is loaded
 
 When multiple such modules are loaded it is possible that parts of the dependency tree from one module will begin to intersect with the dependency tree of another module where they share common (sub) dependencies.  This can lead to problems if the two modules each require different versions of this common dependency.
 
-It is recommended that only one version of a given library be loaded into the same process (i.e. q session).  Indeed the libmamba dependency resolution detects this and won't install a package into an environment if it requires a different version of a library than that already present in the environment - it will either require you to uninstall the conflicting package or it will fail the installation of the new package.
+It is recommended that only one version of a given library be loaded into the same process (i.e. q session).  Indeed the libmamba dependency resolution detects this and won't install a package into an environment if it requires a different version of a library than that already present in the environment - it will either require you to uninstall the old package or it will fail the installation of the new package.
 
 qmamba takes a similar approach by imposing guardrails around actions which are potentially unsafe:
 
 1. If you have already used a module from one environment then try to activate a different environment, qmamba will warn you not to use any modules from the new environment and prompt you whether to continue.  This is in case the modules being loaded from the new environment conflict with the already loaded modules from the old environment.  The correct way to handle this scenario is to install all the required modules into the *same* environment (such that libmamba can prevent versioning conflicts) then load all the modules from that environment.
-2. If you have already used a module from an environment then try to make changes to that same environment qmamba will warn you.  This is case your changes impact (e.g. remove) any of the dependencies required by the already loaded modules.  The correct way to address this scenario is to have all the packages in your environment present and stable before loading anything so you don't subsequently have to change the environment.
+2. If you have already used a module from an environment then try to make changes to that same environment qmamba will warn you.  This is in case your changes impact (e.g. remove) any of the dependencies required by the already loaded modules.  The correct way to address this scenario is to have all the packages in your environment present and stable before loading anything so you don't subsequently have to change the environment.
 
 But these guardrails cannot protect against all potential misuse.  One such example is an arbitrary module being loaded from an location which is not managed by qmamba.  Where a module is loaded from outside the active environment then qmamba/libmamba will have no knowledge of it (what dependencies it requires, where those dependencies are coming from, what versions of those dependencies are required, etc.) so has no information to act on.
 
@@ -59,7 +59,7 @@ These are fully interoperable with qmamba, any such client can be used to manage
 
 That's the main topics covered.
 
-If you're looking for more fine grained control over a qmamba operation remember to use the [help facility](introduction.md#getting-help-with-the-apis) for that API to check if there is an option which could be applicable.
+If you're looking for more fine grained control over a qmamba operation remember to use the [help facility](introduction.md#getting-help-with-the-apis) for that API to check if there is an option which may be applicable.
 
 Similarly the [function reference](reference.md) covers all operations not just the frequently used ones.
 

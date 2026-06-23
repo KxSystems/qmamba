@@ -299,7 +299,7 @@ namespace RepoqueryOptions
   const static IntOptionDefaults int_option_defaults = {
     {TREE, {0, "Show result as a tree (depends)"}},
     {RECURSIVE, {0, "Show dependencies recursively (depends)"}},
-    {PRETTY, {0, "Pretty print result (search)"}},
+    {PRETTY, {0, "Pretty print result with more detail for each package (search)"}},
     {LOCAL, {0, "Query local prefix instead of remote repositories (search)"}},
     {REMOTE, {0, "Query remote repositories instead of local prefix (depends or whoneeds)"}},
   };

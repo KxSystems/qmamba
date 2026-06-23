@@ -16,12 +16,12 @@ The list of qmamba APIs is:
 | [`env.list`](#envlist)                     | List known environments                                 |
 | [`env.remove`](#envremove)                 | Remove an environment                                   |
 | [`env.export`](#envexport)                 | Export environment specification                        |
-| [`env.update`](#envupdate)                 | Update an environment                                   |
+| [`env.update`](#envupdate)                 | Update an environment using file specifications         |
 | [`repoquery.search`](#repoquerysearch)     | Search for packages matching a given query              |
 | [`repoquery.depends`](#repoquerydepends)   | List dependencies of a given query                      |
 | [`repoquery.whoneeds`](#repoquerywhoneeds) | List packages that need the given query as a dependency |
 | [`auth.login`](#authlogin)                 | Store login information for a specific host             |
-| [`auth.logout`](#authlogout)               | Erase login information for a specific host             |
+| [`auth.logout`](#authlogout)               | Delete login information for a specific host            |
 | [`clean`](#clean)                          | Clean package cache                                     |
 | [`info`](#info)                            | Information about qmamba                                |
 | [initialiseRoot](#initialiseroot)          | Initialise the root prefix                              |
@@ -55,7 +55,7 @@ Frequently used options:
 Alias for [repoquery.search](#repoquerysearch).
 
 ```
-q)qmamba.search (`SPECS`CHANNEL)!(enlist ""; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
+q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
 Getting repodata from channels...
 
  Name          Version Build        Channel         Subdir
@@ -196,9 +196,9 @@ Frequently used options:
 
 Where there already are packages in the environment and libmamba detects conflicts in the dependency resolution between them and the new package, it can:
 
-* Uninstall the conflicting packages (option `ALLOW_UNINSTALL`)
-* Attempt to downgrade the conflicting packages (option `ALLOW_DOWNGRADE`)
-* Not change the conflicting packages, in which case the installation will fail (options `FREEZE_INSTALLED`)
+* Uninstall the conflicting existing packages (option `ALLOW_UNINSTALL`)
+* Attempt to downgrade the conflicting existing packages (option `ALLOW_DOWNGRADE`)
+* Not change the conflicting existing packages, in which case the installation will fail (options `FREEZE_INSTALLED`)
 
 ```
 q)qmamba.list[]
@@ -337,9 +337,9 @@ Frequently used options:
 
 | option       | type       | default | description                                                  |
 | ------------ | ---------- | ------- | ------------------------------------------------------------ |
-| ALL          | int        | 0       | Update all packages in the environment                       |
+| ALL          | int        | 0       | Remove all packages in the environment                       |
 | GUARD_IN_USE | string     | "warn"  | Guard against making changes to an in use prefix ('permit', 'warn', 'prompt' or 'deny') |
-| SPECS        | stringlist | n/a     | Specs to update in the environment                           |
+| SPECS        | stringlist | n/a     | Specs to remove from the environment                         |
 | VERBOSE      | int        | 0       | Set verbosity (0, 1 or 2 with increasing verbosity)          |
 
 ```
@@ -437,8 +437,8 @@ Frequently used options:
 
 Where libmamba detects conflicts in the dependency resolution between the updated package and other packages, it can:
 
-* Uninstall the conflicting packages (option `ALLOW_UNINSTALL`)
-* Attempt to downgrade the conflicting packages (option `ALLOW_DOWNGRADE`)
+* Uninstall the existing conflicting packages (option `ALLOW_UNINSTALL`)
+* Attempt to downgrade the existing conflicting packages (option `ALLOW_DOWNGRADE`)
 
 ```
 q)qmamba.list[]
@@ -696,7 +696,7 @@ Frequently used options:
 
 ## `env.update`
 
-*Update an environment to a specification*
+*Update an environment using file specifications*
 
 ```
 qmamba.env.update[options]
@@ -720,7 +720,7 @@ Frequently used options:
 | ROOT_PREFIX  | string | "$QHOME/root" | Path to the root prefix                                      |
 | VERBOSE         | int        | 0   |    Set verbosity (0, 1 or 2 with increasing verbosity) |
 
-Default is to update the active environment.
+Default where no `NAME` or `PREFIX` is specified is to update the active environment.
 ```
 q)qmamba.env.export (enlist `TO_FILE)!(enlist "proto_spec.yaml")
 q)qmamba.create "new_proto"
@@ -806,16 +806,16 @@ where `options` is one of:
 
 Frequently used options:
 
-| option  | type       | default | description                                         |
-| ------- | ---------- | ------- | --------------------------------------------------- |
-| CHANNEL | stringlist | n/a     | Define the list of channels                         |
-| LOCAL   | int        | 0       | Search local prefix instead of remote repositories  |
-| PRETTY  | int        | 0       | Pretty print result                                 |
-| SPECS   | stringlist | n/a     | Specs to query                                      |
-| VERBOSE | int        | 0       | Set verbosity (0, 1 or 2 with increasing verbosity) |
+| option  | type       | default | description                                           |
+| ------- | ---------- | ------- | ----------------------------------------------------- |
+| CHANNEL | stringlist | n/a     | Define the list of channels                           |
+| LOCAL   | int        | 0       | Search local prefix instead of remote repositories    |
+| PRETTY  | int        | 0       | Pretty print result with more detail for each package |
+| SPECS   | stringlist | n/a     | Specs to query                                        |
+| VERBOSE | int        | 0       | Set verbosity (0, 1 or 2 with increasing verbosity)   |
 
 ```
-q)qmamba.search (`SPECS`CHANNEL)!(enlist ""; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
+q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
 Getting repodata from channels...
 
  Name          Version Build        Channel         Subdir
@@ -941,7 +941,7 @@ Frequently used options:
 | USERNAME| string | n/a | User name for the account |
 
 ```
-q)qmamba.auth.login (`HOST`BEARER)!("kxdev.gitlab.io";getenv `GITLAB_TOKEN)
+q)qmamba.auth.login (`HOST`BEARER)!("kxdev.gitlab.io"; getenv `GITLAB_TOKEN)
 Successfully stored login information
 ```
 
@@ -949,7 +949,7 @@ Successfully stored login information
 
 ## `auth.logout`
 
-*Erase login information for a specific host*
+*Delete login information for a specific host*
 
 ```
 qmamba.auth.logout[options]

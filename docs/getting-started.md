@@ -107,10 +107,10 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
 
    [TODO this won't be necessary with the KX Anaconda channel because it is public]
 
-5. Let's say we are looking for a protobuf integration.  We can search for packages matching `*protobuf*` in the KX channel:
+5. Let's say we are looking for a protobuf integration.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*protobuf*` in the KX channel:
 
    ```
-   q)qmamba.search (`SPECS`CHANNEL)!(enlist "*protobuf*";enlist "https://kxdev.gitlab.io/kdbx/conda-channel/channel")
+   q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*protobuf*";enlist "https://kxdev.gitlab.io/kdbx/conda-channel/channel")
    Getting repodata from channels...
    
        q-kx-protobuf 1.1.0 hb0f4dca_0
