@@ -284,10 +284,15 @@ K repoquery(K subcomm, K k_options)
       SetChannelOptions(config, options);
 
       auto search_specs = options.GetStringListOption(RepoqueryOptions::SPECS);
-      bool specs_has_wildcard = std::any_of(search_specs.cbegin(), search_specs.cend(),
-        [](std::string_view spec) {
-          return spec.find('*') != std::string_view::npos;
-        });
+
+      // I don't like the pretty option being turned on when using a wildcard.
+      // It makes the output very lengthy particularly since the wildcard means
+      // it is typically returning numerous packages.
+      // Just turn it off - user can always specify PRETTY option.
+      bool specs_has_wildcard = false; // std::any_of(search_specs.cbegin(), search_specs.cend(),
+      //  [](std::string_view spec) {
+      //    return spec.find('*') != std::string_view::npos;
+      //  });
 
       bool pretty = options.GetIntOption<bool>(RepoqueryOptions::PRETTY);
       bool tree = options.GetIntOption<bool>(RepoqueryOptions::TREE);
@@ -298,7 +303,7 @@ K repoquery(K subcomm, K k_options)
         format = mamba::QueryResultFormat::RecursiveTable;
       if (type == mamba::QueryType::Depends && tree)
         format = mamba::QueryResultFormat::Tree;
-      if (type == mamba::QueryType::Search && (pretty /* || specs_has_wildcard */)) // don't like the pretty option when using a wildcard
+      if (type == mamba::QueryType::Search && (pretty || specs_has_wildcard ))
         format = mamba::QueryResultFormat::Pretty;
 
       bool local = options.GetIntOption<bool>(RepoqueryOptions::LOCAL);
