@@ -1,0 +1,317 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 21e1b0c7..50d1a328 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -53,7 +53,8 @@ if(MSVC)
+     # add_definitions("-DUNICODE -D_UNICODE")
+     set(
+         CMAKE_MSVC_RUNTIME_LIBRARY
+-        "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
++        #"MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
++		"MultiThreadedDLL"
+         CACHE STRING "MSVC runtime library"
+     )
+ endif()
+diff --git a/libmamba/CMakeLists.txt b/libmamba/CMakeLists.txt
+index 16754c14..57439c88 100644
+--- a/libmamba/CMakeLists.txt
++++ b/libmamba/CMakeLists.txt
+@@ -556,14 +556,32 @@ macro(libmamba_create_target target_name linkage output_name)
+ 
+             set(CMAKE_PREFIX_PATH "$ENV{VCPKG_ROOT}/installed/x64-windows-static-md/")
+ 
++            # TODO AND CONTEXT: We found a link error in libarchive which lacked a link to XmlLite
++            # which is provided by Windows. libarchive has cmake scripts doing the necessary work to
++            # link that library but for some reason we couldnt identify it is not linking in this
++            # specific case (it was before but the version changed apparently). As a workaround we
++            # manually link with that required library but a better solution would be to find why
++            # libarchive doesnt do it itself.
++            set(SYSTEM_PROVIDED_LIBRARIES XmlLite.lib) # required by libarchive
++            set(ENABLE_WIN32_XMLLITE ON)
++
+             # For Windows we have a vcpkg based build system right now.
+-            find_package(LibArchive MODULE REQUIRED)
++            #find_package(LibArchive MODULE REQUIRED)
++            #find_package(CURL CONFIG REQUIRED)
++            #find_library(LIBLZMA_LIBRARIES lzma REQUIRED)
++            #find_library(LZ4_LIBRARY NAMES lz4)
++            #find_library(LZO2_LIBRARY NAMES lzo2)
++            #find_package(zstd CONFIG REQUIRED)
++            #find_library(BZIP2_LIBRARIES NAMES bz2)
++
+             find_package(CURL CONFIG REQUIRED)
++            find_library(LIBARCHIVE_LIBRARY NAMES archive)
+             find_library(LIBLZMA_LIBRARIES lzma REQUIRED)
+             find_library(LZ4_LIBRARY NAMES lz4)
+             find_library(LZO2_LIBRARY NAMES lzo2)
+-            find_package(zstd CONFIG REQUIRED)
++            find_library(LIBZSTD_LIBRARY NAMES zstd)
+             find_library(BZIP2_LIBRARIES NAMES bz2)
++			
+             find_library(CRYPTO_LIBRARIES NAMES libcrypto)
+ 
+             find_library(LIBXML2_LIBRARY NAMES libxml2)
+@@ -574,12 +592,15 @@ macro(libmamba_create_target target_name linkage output_name)
+             target_link_libraries(
+                 ${target_name}
+                 PUBLIC
+-                    ${CRYPTO_LIBRARIES}
+-                    ${LibArchive_LIBRARY}
++					${SYSTEM_PROVIDED_LIBRARIES}
++                    #${LibArchive_LIBRARY}
++					${LIBARCHIVE_LIBRARY}
+                     ${LIBXML2_LIBRARY}
++                    ${CRYPTO_LIBRARIES}
+                     ${ICONV_LIBRARY}
+                     ${CHARSET_LIBRARY}
+-                    zstd::libzstd_static
++                    #zstd::libzstd_static
++					${LIBZSTD_LIBRARY}
+                     ${LZ4_LIBRARY}
+                     ${LZO2_LIBRARY}
+                     ${BZIP2_LIBRARIES}
+diff --git a/libmamba/include/mamba/core/output.hpp b/libmamba/include/mamba/core/output.hpp
+index ae13e430..65b91ef0 100644
+--- a/libmamba/include/mamba/core/output.hpp
++++ b/libmamba/include/mamba/core/output.hpp
+@@ -12,6 +12,7 @@
+ #include <string>
+ #include <string_view>
+ #include <vector>
++#include <functional>
+ 
+ #include <fmt/color.h>
+ #include <nlohmann/json.hpp>
+@@ -126,8 +127,9 @@ namespace mamba
+         static Console& instance();
+         static bool is_available();
+         static ConsoleStream stream();
+-        static bool prompt(std::string_view message, char fallback = '_');
+-        static bool prompt(std::string_view message, char fallback, std::istream& input_stream);
++        void getline(std::istream& input_stream, std::string& response);
++        bool prompt(std::string_view message, char fallback = '_');
++        bool prompt(std::string_view message, char fallback, std::istream& input_stream);
+ 
+         ProgressProxy add_progress_bar(const std::string& name, size_t expected_total = 0);
+         void clear_progress_bars();
+@@ -151,8 +153,11 @@ namespace mamba
+         const Context& context() const;
+ 
+         Console(const Context& context);
++        Console(const Context& context, std::function<void(std::istream&, std::string&)> getline_func_);
+         ~Console();
+ 
++        std::function<void(std::istream&, std::string&)> getline_func;
++
+     private:
+ 
+         void json_print();
+diff --git a/libmamba/src/api/clean.cpp b/libmamba/src/api/clean.cpp
+index bf1cf78e..19ff4fc8 100644
+--- a/libmamba/src/api/clean.cpp
++++ b/libmamba/src/api/clean.cpp
+@@ -216,7 +216,7 @@ namespace mamba
+                 {
+                     LOG_INFO << "No cached tarballs found";
+                 }
+-                else if (!ctx.dry_run && Console::prompt("\nRemove tarballs", 'y'))
++                else if (!ctx.dry_run && Console::instance().prompt("\nRemove tarballs", 'y'))
+                 {
+                     for (auto& tbr : to_be_removed)
+                     {
+@@ -302,7 +302,7 @@ namespace mamba
+                             This does not check for packages installed using
+                             symlinks back to the package cache.)");
+ 
+-                    if (Console::prompt("\nRemove unused packages", 'y'))
++                    if (Console::instance().prompt("\nRemove unused packages", 'y'))
+                     {
+                         for (auto& tbr : to_be_removed)
+                         {
+diff --git a/libmamba/src/api/configuration.cpp b/libmamba/src/api/configuration.cpp
+index 4d5eda37..e522bad4 100644
+--- a/libmamba/src/api/configuration.cpp
++++ b/libmamba/src/api/configuration.cpp
+@@ -805,12 +805,8 @@ namespace mamba
+                     const auto exe_name = get_self_exe_path().stem().string();
+                     LOG_WARNING << "You have not set the root prefix environment variable.\n"
+                                    "To permanently modify the root prefix location, either:\n"
++                                   "  - use the 'ROOT_PREFIX' dictionary option\n"
+                                    "  - set the 'MAMBA_ROOT_PREFIX' environment variable\n"
+-                                   "  - use the '-r,--root-prefix' CLI option\n"
+-                                   "  - use '"
+-                                << exe_name
+-                                << " shell init ...' to initialize your shell\n"
+-                                   "    (then restart or source the contents of the shell init script)\n"
+                                    "Continuing with default value: "
+                                 << '"' << prefix.string() << '"';
+                 }
+@@ -922,8 +918,8 @@ namespace mamba
+             {
+                 const auto exe_name = get_self_exe_path().stem().string();
+                 LOG_ERROR << "No prefix found at: " << prefix.string();
+-                LOG_ERROR << "Environment must first be created with \"" << exe_name
+-                          << " create -n {env_name} ...\"";
++                LOG_ERROR << "Environment must first be created with:\n"
++                             "    qmamba.create (`NAME`...)!(\"{env_name}\";...)";
+                 throw std::runtime_error("Aborting.");
+             }
+         }
+diff --git a/libmamba/src/api/create.cpp b/libmamba/src/api/create.cpp
+index 34d3ce96..d5731684 100644
+--- a/libmamba/src/api/create.cpp
++++ b/libmamba/src/api/create.cpp
+@@ -49,7 +49,7 @@ namespace mamba
+                 }
+                 else if (fs::exists(ctx.prefix_params.target_prefix / "conda-meta"))
+                 {
+-                    if (Console::prompt(
++                    if (Console::instance().prompt(
+                             "Found conda-prefix at '" + ctx.prefix_params.target_prefix.string()
+                                 + "'. Overwrite?",
+                             'n'
+diff --git a/libmamba/src/core/output.cpp b/libmamba/src/core/output.cpp
+index 37235b6d..676b2457 100644
+--- a/libmamba/src/core/output.cpp
++++ b/libmamba/src/core/output.cpp
+@@ -298,6 +298,27 @@ namespace mamba
+ 
+     Console::Console(const Context& context)
+         : p_data(new ConsoleData{ context })
++     {
++        set_singleton(*this);
++
++        init_progress_bar_manager(ProgressBarMode::multi);
++        MainExecutor::instance().on_close(
++            p_data->m_tasksync.synchronized([this] { terminate_progress_bar_manager(); })
++        );
++#ifdef _WIN32
++        // initialize ANSI codes on Win terminals
++        auto hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
++        SetConsoleMode(hStdout, ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
++#endif
++
++        using std::placeholders::_1;
++        using std::placeholders::_2;
++        getline_func = std::bind(&Console::getline, this, _1, _2);
++    }
++
++    Console::Console(const Context& context, std::function<void(std::istream&, std::string&)> getline_func_)
++        : p_data(new ConsoleData{ context })
++        , getline_func(getline_func_)
+     {
+         set_singleton(*this);
+ 
+@@ -371,11 +392,16 @@ namespace mamba
+         data->m_buffer.clear();
+     }
+ 
++    void Console::getline(std::istream& input_stream, std::string& response)
++    {
++        std::getline(input_stream, response);
++    }
++
+     // We use an overload instead of a default argument to avoid exposing std::cin
+     // in the header (this would require to include iostream)
+     bool Console::prompt(std::string_view message, char fallback)
+     {
+-        return Console::prompt(message, fallback, std::cin);
++        return instance().prompt(message, fallback, std::cin);
+     }
+ 
+     bool Console::prompt(std::string_view message, char fallback, std::istream& input_stream)
+@@ -400,7 +426,7 @@ namespace mamba
+                 std::cout << "[y/n] ";
+             }
+             std::string response;
+-            std::getline(input_stream, response);
++            getline_func(input_stream, response);
+ #ifdef _WIN32
+             response = util::strip(response);
+ #endif
+diff --git a/libmamba/src/core/transaction.cpp b/libmamba/src/core/transaction.cpp
+index 2fb104b4..0b451857 100644
+--- a/libmamba/src/core/transaction.cpp
++++ b/libmamba/src/core/transaction.cpp
+@@ -52,18 +52,8 @@ namespace mamba
+             // Get the name of the environment
+             const auto environment = env_name(ctx);
+ 
+-            Console::stream() << "\nTo activate this environment, use:\n\n"
+-                                 "    "
+-                              << executable << " activate " << environment
+-                              << "\n\n"
+-                                 "Or to execute a single command in this environment, use:\n\n"
+-                                 "    "
+-                              << executable
+-                              << " run "
+-                              // Use -n or -p depending on if the env_name is a full prefix or just
+-                              // a name.
+-                              << (environment == ctx.prefix_params.target_prefix ? "-p " : "-n ")
+-                              << environment << " mycommand\n";
++            Console::stream() << "\nTo activate this environment, use:\n"
++                                 "    qmamba.activate \"" << environment << "\"\n";
+         }
+     }
+ 
+@@ -827,7 +817,7 @@ namespace mamba
+             return true;
+         }
+ 
+-        return Console::prompt("Confirm changes", 'y');
++        return Console::instance().prompt("Confirm changes", 'y');
+     }
+ 
+     void MTransaction::print(const Context& ctx, ChannelContext& channel_context)
+diff --git a/libmamba/src/core/util_os.cpp b/libmamba/src/core/util_os.cpp
+index 27583720..daaffa06 100644
+--- a/libmamba/src/core/util_os.cpp
++++ b/libmamba/src/core/util_os.cpp
+@@ -250,7 +250,7 @@ namespace mamba
+         }
+         else
+         {
+-            if (Console::prompt("Enter admin mode to enable long paths support?", 'n'))
++            if (Console::instance().prompt("Enter admin mode to enable long paths support?", 'n'))
+             {
+                 if (!run_as_admin(
+                         "reg.exe",
+diff --git a/libmamba/src/solver/libsolv/helpers.cpp b/libmamba/src/solver/libsolv/helpers.cpp
+index cd4e9c2a..a200e27f 100644
+--- a/libmamba/src/solver/libsolv/helpers.cpp
++++ b/libmamba/src/solver/libsolv/helpers.cpp
+@@ -532,7 +532,7 @@ namespace mamba::solver::libsolv
+ 
+         auto parser = simdjson::dom::parser();
+         const auto lock = LockFile(filename);
+-        const auto repodata = parser.load(filename);
++        const auto repodata = parser.load(filename.string());
+ 
+         // An override for missing package subdir is found at the top level
+         auto default_subdir = std::string();
+diff --git a/micromamba/src/clean.cpp b/micromamba/src/clean.cpp
+index 66b73146..85f1ff5b 100644
+--- a/micromamba/src/clean.cpp
++++ b/micromamba/src/clean.cpp
+@@ -104,7 +104,7 @@ set_clean_command(CLI::App* subcom, Configuration& config)
+             if (config.at("clean_force_pkgs_dirs").compute().value<bool>())
+             {
+                 if (config.at("always_yes").compute().value<bool>()
+-                    || Console::prompt("Remove all contents from the package caches?"))
++                    || Console::instance().prompt("Remove all contents from the package caches?"))
+                 {
+                     options = options | MAMBA_CLEAN_FORCE_PKGS_DIRS;
+                 }
+diff --git a/micromamba/src/env.cpp b/micromamba/src/env.cpp
+index 44f6c6fc..f331d471 100644
+--- a/micromamba/src/env.cpp
++++ b/micromamba/src/env.cpp
+@@ -315,7 +315,7 @@ set_env_command(CLI::App* com, mamba::Configuration& config)
+             {
+                 mamba::Console::stream() << "No packages to remove from environment.";
+ 
+-                auto res = mamba::Console::prompt("Do you want to remove the environment?", 'Y');
++                auto res = mamba::Console::instance().prompt("Do you want to remove the environment?", 'Y');
+                 if (!res)
+                 {
+                     mamba::Console::stream() << "The environment was not removed.";
