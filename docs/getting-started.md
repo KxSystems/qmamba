@@ -98,7 +98,7 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
    "/home/neal/qx/mod"
    ```
 
-4. Let's say we are looking for a protobuf integration.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*protobuf*` in the `kx` channel:
+4. Say you are looking for a protobuf integration.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*protobuf*` in the `kx` channel:
 
    ```
    q)qmamba.search (`SPECS`CHANNEL`PRETTY)!(enlist "q-*protobuf*";enlist "kx";1)

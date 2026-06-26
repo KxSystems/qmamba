@@ -39,7 +39,7 @@ Currently, two channels are applicable when installing kdb-x modules:
 * `kx` provides the KX owned modules
 * `conda-forge` is used to provide third party libraries, which are dependencies of some KX modules
 
-Additional channels should become available in future for other kdb-x module vendors and community contributions.
+Additional channels may become available in future for other kdb-x module vendors and community contributions.
 
 
 
