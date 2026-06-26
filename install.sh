@@ -2,7 +2,8 @@
 
 if [ "$#" -ne 1 ]
 then
-    echo echo "Usage: $0 <path to root of kdb-x installation>"
+    echo "Usage: $0 <path to root of kdb-x installation>"
+    echo "(by default kdb-x is installed to ~/.kx)"
     exit 1
 fi
 
@@ -16,7 +17,7 @@ fi
 
 # check source directory exists
 if [ ! -d mod ]; then
-    echo "ERROR: Directory 'mod' does not exist. Please run this script from release package"
+    echo "ERROR: Directory 'mod' does not exist. Please run the install script located inside the release package."
     exit 1
 fi
 

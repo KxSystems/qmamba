@@ -55,25 +55,19 @@ Frequently used options:
 Alias for [repoquery.search](#repoquerysearch).
 
 ```
-q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
+q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist "kx")
 Getting repodata from channels...
 
- Name          Version Build        Channel         Subdir
-─────────────────────────────────────────────────────────────
- q-kx-arrow    1.5.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-avro     1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-expat    1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-expat    1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-fusionx  1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-fusionx  1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-kafka    0.0.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-log      1.0.0   h4616a5c_0   kxdev.gitlab.io noarch
- q-kx-openblas 1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-openblas 1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-pcre2    1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-pcre2    1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-printf   1.0.1   h4616a5c_0   kxdev.gitlab.io noarch
- q-kx-protobuf 1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
+ Name           Version Build        Channel Subdir
+──────────────────────────────────────────────────────
+ q-kx-expat     1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-fusionx   1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-log       1.0.0   h4616a5c_0   kx      noarch
+ q-kx-openblas  1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-pcre2     1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-printf    1.0.0   h4616a5c_0   kx      noarch
+ q-kx-protobuf  2.0.0   hb0f4dca_0   kx      linux-64
+ q-kx-unit-test 1.0.0   h4616a5c_0   kx      noarch
 ```
 
 
@@ -154,14 +148,14 @@ q)qmamba.env.list[]
 q)qmamba.active[]
 "/home/neal/qx/root"
 q).Q.m.SP
-"/home/neal/qx/root/q/mod"
+"/home/neal/qx/root/lib/q/mod"
 "/home/neal/qx/mod"
 q)qmamba.activate "test"
 Activated environment at prefix: /home/neal/qx/root/envs/test
 q)qmamba.active[]
 "/home/neal/qx/root/envs/test"
 q).Q.m.SP
-"/home/neal/qx/root/envs/test/q/mod"
+"/home/neal/qx/root/envs/test/lib/q/mod"
 "/home/neal/qx/mod"
 ```
 
@@ -203,7 +197,8 @@ Where there already are packages in the environment and libmamba detects conflic
 ```
 q)qmamba.list[]
 List of packages in environment: "/home/neal/qx/root/envs/test"
-q)qmamba.install (`SPECS`CHANNEL)!(enlist "q-kx-protobuf";("https://kxdev.gitlab.io/kdbx/conda-channel/channel";"conda-forge"))
+
+q)qmamba.install (`SPECS`CHANNEL)!(enlist "q-kx-protobuf";("kx";"conda-forge"))
 conda-forge/linux-64                                        Using cache
 conda-forge/noarch                                          Using cache
 
@@ -217,20 +212,20 @@ Transaction
    - q-kx-protobuf
 
 
-  Package          Version  Build        Channel                                          Size
-────────────────────────────────────────────────────────────────────────────────────────────────
+  Package          Version  Build        Channel           Size
+─────────────────────────────────────────────────────────────────
   Install:
-────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────
 
-  + _openmp_mutex      4.5  20_gnu       conda-forge                                    Cached
-  + q-kx-protobuf    1.1.0  hb0f4dca_0   kxdev.gitlab.io/kdbx/conda-channel/channel     Cached
-  + libgcc          15.2.0  he0feb66_19  conda-forge                                    Cached
-  + libgcc-ng       15.2.0  h69a702a_19  conda-forge                                    Cached
-  + libgomp         15.2.0  he0feb66_19  conda-forge                                    Cached
-  + libprotobuf    3.21.12  hfc55251_2   conda-forge                                    Cached
-  + libstdcxx       15.2.0  h934c35e_19  conda-forge                                    Cached
-  + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge                                    Cached
-  + libzlib          1.3.2  h25fd6f3_2   conda-forge                                    Cached
+  + _openmp_mutex      4.5  20_gnu       conda-forge     Cached
+  + libgcc          15.2.0  he0feb66_19  conda-forge     Cached
+  + libgcc-ng       15.2.0  h69a702a_19  conda-forge     Cached
+  + libgomp         15.2.0  he0feb66_19  conda-forge     Cached
+  + libprotobuf    3.21.12  hfc55251_2   conda-forge     Cached
+  + libstdcxx       15.2.0  h934c35e_19  conda-forge     Cached
+  + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge     Cached
+  + libzlib          1.3.2  h25fd6f3_2   conda-forge     Cached
+  + q-kx-protobuf    2.0.0  hb0f4dca_0   kx              Cached
 
   Summary:
 
@@ -238,7 +233,7 @@ Transaction
 
   Total download: 0 B
 
-────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────
 
 
 Confirm changes: [Y/n]
@@ -253,7 +248,7 @@ Linking libgcc-ng-15.2.0-h69a702a_19
 Linking libstdcxx-15.2.0-h934c35e_19
 Linking libstdcxx-ng-15.2.0-hdf11a46_19
 Linking libprotobuf-3.21.12-hfc55251_2
-Linking q-kx-protobuf-1.1.0-hb0f4dca_0
+Linking q-kx-protobuf-2.0.0-hb0f4dca_0
 
 Transaction finished
 
@@ -261,9 +256,8 @@ q)qmamba.list[]
 List of packages in environment: "/home/neal/qx/root/envs/test"
 
   Name           Version  Build        Channel
-───────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────
   _openmp_mutex  4.5      20_gnu       conda-forge
-  q-kx-protobuf  1.1.0    hb0f4dca_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
   libgcc         15.2.0   he0feb66_19  conda-forge
   libgcc-ng      15.2.0   h69a702a_19  conda-forge
   libgomp        15.2.0   he0feb66_19  conda-forge
@@ -271,6 +265,7 @@ List of packages in environment: "/home/neal/qx/root/envs/test"
   libstdcxx      15.2.0   h934c35e_19  conda-forge
   libstdcxx-ng   15.2.0   hdf11a46_19  conda-forge
   libzlib        1.3.2    h25fd6f3_2   conda-forge
+  q-kx-protobuf  2.0.0    hb0f4dca_0   kx
 ```
 
 
@@ -305,9 +300,8 @@ q)qmamba.list[]
 List of packages in environment: "/home/neal/qx/root/envs/test"
 
   Name           Version  Build        Channel
-───────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────
   _openmp_mutex  4.5      20_gnu       conda-forge
-  q-kx-protobuf  1.1.0    hb0f4dca_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
   libgcc         15.2.0   he0feb66_19  conda-forge
   libgcc-ng      15.2.0   h69a702a_19  conda-forge
   libgomp        15.2.0   he0feb66_19  conda-forge
@@ -315,6 +309,7 @@ List of packages in environment: "/home/neal/qx/root/envs/test"
   libstdcxx      15.2.0   h934c35e_19  conda-forge
   libstdcxx-ng   15.2.0   hdf11a46_19  conda-forge
   libzlib        1.3.2    h25fd6f3_2   conda-forge
+  q-kx-protobuf  2.0.0    hb0f4dca_0   kx
 ```
 
 
@@ -347,10 +342,8 @@ q)qmamba.list[]
 List of packages in environment: "/home/neal/qx/root/envs/test"
 
   Name           Version  Build        Channel
-───────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────
   _openmp_mutex  4.5      20_gnu       conda-forge
-  q-kx-printf    1.0.1    h4616a5c_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
-  q-kx-protobuf  1.1.0    hb0f4dca_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
   libgcc         15.2.0   he0feb66_19  conda-forge
   libgcc-ng      15.2.0   h69a702a_19  conda-forge
   libgomp        15.2.0   he0feb66_19  conda-forge
@@ -358,6 +351,8 @@ List of packages in environment: "/home/neal/qx/root/envs/test"
   libstdcxx      15.2.0   h934c35e_19  conda-forge
   libstdcxx-ng   15.2.0   hdf11a46_19  conda-forge
   libzlib        1.3.2    h25fd6f3_2   conda-forge
+  q-kx-printf    1.0.0    h4616a5c_0   kx
+  q-kx-protobuf  2.0.0    hb0f4dca_0   kx
 q)qmamba.remove enlist "q-kx-printf"
 Transaction
 
@@ -368,12 +363,12 @@ Transaction
    - q-kx-printf
 
 
-  Package       Version  Build       Channel                                          Size
-──────────────────────────────────────────────────────────────────────────────────────────
+  Package        Version  Build       Channel       Size
+──────────────────────────────────────────────────────────
   Remove:
-──────────────────────────────────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────
 
-  - q-kx-printf 1.0.1    h4616a5c_0  kxdev.gitlab.io/kdbx/conda-channel/channel     Cached
+  - q-kx-printf    1.0.0  h4616a5c_0  kx          Cached
 
   Summary:
 
@@ -381,14 +376,14 @@ Transaction
 
   Total download: 0 B
 
-──────────────────────────────────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────
 
 
 Confirm changes: [Y/n]
 Y
 
 Transaction starting
-Unlinking q-kx-printf-1.0.1-h4616a5c_0
+Unlinking q-kx-printf-1.0.0-h4616a5c_0
 
 Transaction finished
 
@@ -396,9 +391,8 @@ q)qmamba.list[]
 List of packages in environment: "/home/neal/qx/root/envs/test"
 
   Name           Version  Build        Channel
-───────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────
   _openmp_mutex  4.5      20_gnu       conda-forge
-  q-kx-protobuf  1.1.0    hb0f4dca_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
   libgcc         15.2.0   he0feb66_19  conda-forge
   libgcc-ng      15.2.0   h69a702a_19  conda-forge
   libgomp        15.2.0   he0feb66_19  conda-forge
@@ -406,6 +400,7 @@ List of packages in environment: "/home/neal/qx/root/envs/test"
   libstdcxx      15.2.0   h934c35e_19  conda-forge
   libstdcxx-ng   15.2.0   hdf11a46_19  conda-forge
   libzlib        1.3.2    h25fd6f3_2   conda-forge
+  q-kx-protobuf  2.0.0    hb0f4dca_0   kx
 ```
 
 
@@ -612,12 +607,12 @@ Transaction
    - q-kx-printf
 
 
-  Package     Version  Build       Channel                                          Size
-──────────────────────────────────────────────────────────────────────────────────────────
+  Package        Version  Build       Channel       Size
+──────────────────────────────────────────────────────────
   Remove:
-──────────────────────────────────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────
 
-  - q-kx-printf 1.0.0  h4616a5c_0  kxdev.gitlab.io/kdbx/conda-channel/channel     Cached
+  - q-kx-printf    1.0.0  h4616a5c_0  kx          Cached
 
   Summary:
 
@@ -625,7 +620,7 @@ Transaction
 
   Total download: 0 B
 
-──────────────────────────────────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────
 
 
 Confirm changes: [Y/n]
@@ -664,21 +659,22 @@ It returns a kdb string with the yaml specification.  When written to a file (e.
 
 ```
 q)-1 qmamba.env.export[];
-name: proto
+name: test
 channels:
   - conda-forge
-  - https://kxdev.gitlab.io/kdbx/conda-channel/channel
+  - kx
 dependencies:
   - _openmp_mutex=4.5=20_gnu
-  - q-kx-protobuf=1.1.0=hb0f4dca_0
   - libgcc=15.2.0=he0feb66_19
   - libgcc-ng=15.2.0=h69a702a_19
   - libgomp=15.2.0=he0feb66_19
   - libprotobuf=3.21.12=hfc55251_2
   - libstdcxx=15.2.0=h934c35e_19
   - libstdcxx-ng=15.2.0=hdf11a46_19
+  - libzlib=1.3.2=h25fd6f3_2
+  - q-kx-protobuf=2.0.0=hb0f4dca_0
 
-prefix: "/home/neal/qx/root/envs/proto"
+prefix: "/home/neal/qx/root/envs/test"
 ```
 
 Frequently used options:
@@ -738,37 +734,38 @@ Transaction
   Updating specs:
 
    - _openmp_mutex=4.5=20_gnu
-   - q-kx-protobuf=1.1.0=hb0f4dca_0
    - libgcc=15.2.0=he0feb66_19
    - libgcc-ng=15.2.0=h69a702a_19
    - libgomp=15.2.0=he0feb66_19
    - libprotobuf=3.21.12=hfc55251_2
    - libstdcxx=15.2.0=h934c35e_19
    - libstdcxx-ng=15.2.0=hdf11a46_19
+   - libzlib=1.3.2=h25fd6f3_2
+   - q-kx-protobuf=2.0.0=hb0f4dca_0
 
 
-  Package          Version  Build        Channel                                          Size
-────────────────────────────────────────────────────────────────────────────────────────────────
+  Package          Version  Build        Channel           Size
+─────────────────────────────────────────────────────────────────
   Install:
-────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────
 
-  + _openmp_mutex      4.5  20_gnu       conda-forge                                    Cached
-  + libgcc          15.2.0  he0feb66_19  conda-forge                                    Cached
-  + libgcc-ng       15.2.0  h69a702a_19  conda-forge                                    Cached
-  + libgomp         15.2.0  he0feb66_19  conda-forge                                    Cached
-  + libprotobuf    3.21.12  hfc55251_2   conda-forge                                    Cached
-  + libstdcxx       15.2.0  h934c35e_19  conda-forge                                    Cached
-  + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge                                    Cached
-  + libzlib          1.3.2  h25fd6f3_2   conda-forge                                    Cached
-  + q-kx-protobuf    1.1.0  hb0f4dca_0   kxdev.gitlab.io/kdbx/conda-channel/channel        3MB
+  + _openmp_mutex      4.5  20_gnu       conda-forge     Cached
+  + libgcc          15.2.0  he0feb66_19  conda-forge     Cached
+  + libgcc-ng       15.2.0  h69a702a_19  conda-forge     Cached
+  + libgomp         15.2.0  he0feb66_19  conda-forge     Cached
+  + libprotobuf    3.21.12  hfc55251_2   conda-forge     Cached
+  + libstdcxx       15.2.0  h934c35e_19  conda-forge     Cached
+  + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge     Cached
+  + libzlib          1.3.2  h25fd6f3_2   conda-forge     Cached
+  + q-kx-protobuf    2.0.0  hb0f4dca_0   kx              Cached
 
   Summary:
 
   Install: 9 packages
 
-  Total download: 3MB
+  Total download: 0 B
 
-────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────
 
 
 Confirm changes: [Y/n]
@@ -783,7 +780,7 @@ Linking libstdcxx-15.2.0-h934c35e_19
 Linking libgcc-ng-15.2.0-h69a702a_19
 Linking libstdcxx-ng-15.2.0-hdf11a46_19
 Linking libprotobuf-3.21.12-hfc55251_2
-Linking q-kx-protobuf-1.1.0-hb0f4dca_0
+Linking q-kx-protobuf-2.0.0-hb0f4dca_0
 
 Transaction finished
 ```
@@ -815,25 +812,19 @@ Frequently used options:
 | VERBOSE | int        | 0       | Set verbosity (0, 1 or 2 with increasing verbosity)   |
 
 ```
-q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist ("https://kxdev.gitlab.io/kdbx/conda-channel/channel"))
+q)qmamba.repoquery.search (`SPECS`CHANNEL)!(enlist "q-*"; enlist "kx")
 Getting repodata from channels...
 
- Name          Version Build        Channel         Subdir
-─────────────────────────────────────────────────────────────
- q-kx-arrow    1.5.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-avro     1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-expat    1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-expat    1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-fusionx  1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-fusionx  1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-kafka    0.0.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-log      1.0.0   h4616a5c_0   kxdev.gitlab.io noarch
- q-kx-openblas 1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-openblas 1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-pcre2    1.2.1   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-pcre2    1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
- q-kx-printf   1.0.1   h4616a5c_0   kxdev.gitlab.io noarch
- q-kx-protobuf 1.1.0   hb0f4dca_0   kxdev.gitlab.io linux-64
+ Name           Version Build        Channel Subdir
+──────────────────────────────────────────────────────
+ q-kx-expat     1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-fusionx   1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-log       1.0.0   h4616a5c_0   kx      noarch
+ q-kx-openblas  1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-pcre2     1.2.1   hb0f4dca_0   kx      linux-64
+ q-kx-printf    1.0.0   h4616a5c_0   kx      noarch
+ q-kx-protobuf  2.0.0   hb0f4dca_0   kx      linux-64
+ q-kx-unit-test 1.0.0   h4616a5c_0   kx      noarch
 ```
 
 
@@ -864,17 +855,19 @@ Frequently used options:
 | VERBOSE   | int        | 0       | Set verbosity (0, 1 or 2 with increasing verbosity) |
 
 ```
-q)qmamba.repoquery.depends (`SPECS`CHANNEL)!(enlist "q-kx-protobuf"; ("https://kxdev.gitlab.io/kdbx/conda-channel/channel";"conda-forge"))
+q)qmamba.repoquery.depends (`SPECS`CHANNEL)!(enlist "q-kx-protobuf"; ("kx";"conda-forge"))
 Getting repodata from channels...
 
+kx/linux-64                                                 Using cache
+kx/noarch                                                   Using cache
 conda-forge/linux-64                                        Using cache
 conda-forge/noarch                                          Using cache
- Name          Version  Build        Channel         Subdir
-─────────────────────────────────────────────────────────────
- q-kx-protobuf   1.1.0  hb0f4dca_0   kxdev.gitlab.io linux-64
- libgcc         15.2.0  h767d61c_5   conda-forge     linux-64
- libprotobuf   3.21.12  h3eb15da_0   conda-forge     linux-64
- libstdcxx      15.2.0  h8f9b012_5   conda-forge     linux-64
+ Name          Version Build        Channel     Subdir
+─────────────────────────────────────────────────────────
+ libgcc        15.2.0  h767d61c_5   conda-forge linux-64
+ libprotobuf   3.21.12 h3eb15da_0   conda-forge linux-64
+ libstdcxx     15.2.0  h8f9b012_5   conda-forge linux-64
+ q-kx-protobuf 2.0.0   hb0f4dca_0   kx          linux-64
 ```
 
 
@@ -905,14 +898,14 @@ Frequently used options:
 Only a single query is supported.
 
 ```
-q)qmamba.repoquery.whoneeds (`SPECS`CHANNEL)!(enlist "q-kx-printf"; ("https://kxdev.gitlab.io/kdbx/conda-channel/channel";"conda-forge"))
+q)qmamba.repoquery.whoneeds (`SPECS`CHANNEL)!(enlist "q-kx-printf"; ("kx";"conda-forge"))
 Getting repodata from channels...
 
 conda-forge/linux-64                                        Using cache
 conda-forge/noarch                                          Using cache
- Name     Version Build        Depends     Channel         Subdir
-──────────────────────────────────────────────────────────────────
- q-kx-log 1.0.0   h4616a5c_0   q-kx-printf kxdev.gitlab.io noarch
+ Name     Version Build        Depends     Channel Subdir
+──────────────────────────────────────────────────────────
+ q-kx-log 1.0.0   h4616a5c_0   q-kx-printf kx      noarch
 ```
 
 

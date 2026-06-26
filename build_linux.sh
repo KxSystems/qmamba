@@ -32,8 +32,9 @@ mkdir install
 cmake .. -DLIBMAMBA_INSTALL=$LIBMAMBA_INSTALL -DCMAKE_INSTALL_PREFIX=$(pwd)/install
 cmake --build . --parallel 6
 cmake --build . --target install
-echo "qmamba installation packages created in: $(pwd)/install"
-cp qmamba.so ..
+echo "qmamba installation package created"
+echo
+echo "To install qmamba run the installation script from: $(pwd)/install/qmamba"
 cd ..
 
 # Deactivate the micromamba environment

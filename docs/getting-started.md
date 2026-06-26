@@ -48,7 +48,7 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
 
 
 
-## A quick tour
+## Quick tour
 
 1. Restart q as suggested, load qmamba and list the available environments.  Initially this will only show the base environment which was created:
 
@@ -98,48 +98,39 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
    "/home/neal/qx/mod"
    ```
 
-4. The KX channel is currently hosted on gitlab at https://kxdev.gitlab.io/kdbx/conda-channel/channel.  Since this is private it is necessary to provide your Personal Access Token for authentication (this only needs to be done once, the details are saved in `~/.mamba/auth/`):
+4. Let's say we are looking for a protobuf integration.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*protobuf*` in the `kx` channel:
 
    ```
-   q)qmamba.auth.login (`HOST`BEARER)!("kxdev.gitlab.io";getenv `GITLAB_TOKEN)
-   Successfully stored login information
-   ```
-
-   [TODO this won't be necessary with the KX Anaconda channel because it is public]
-
-5. Let's say we are looking for a protobuf integration.  All kdb-x modules are prefixed with `q-` so you can limit the results by searching for packages matching `q-*protobuf*` in the KX channel:
-
-   ```
-   q)qmamba.search (`SPECS`CHANNEL)!(enlist "q-*protobuf*";enlist "https://kxdev.gitlab.io/kdbx/conda-channel/channel")
+   q)qmamba.search (`SPECS`CHANNEL`PRETTY)!(enlist "q-*protobuf*";enlist "kx";1)
    Getting repodata from channels...
    
-       q-kx-protobuf 1.1.0 hb0f4dca_0
+        q-kx-protobuf 2.0.0 hb0f4dca_0
    ────────────────────────────────────────
    
     Name            q-kx-protobuf
-    Version         1.1.0
+    Version         2.0.0
     Build           hb0f4dca_0
-    Size            2821 kB
+    Size            2822 kB
     License
     Subdir          linux-64
-    File Name       q-kx-protobuf-1.1.0-hb0f4dca_0.conda
-    URL             https://kxdev.gitlab.io/kdbx/conda-channel/channel/linux-64/q-kx-protobuf-1.1.0-hb0f4dca_0.conda
-    MD5             c15a0715e13bb429810862ff8d06af27
-    SHA256          c68bbd4cfd859596fb992f293ef8b1de3346c068b4f832850b1106760555c72e
+    File Name       q-kx-protobuf-2.0.0-hb0f4dca_0.conda
+    URL             https://conda.anaconda.org/kx/linux-64/q-kx-protobuf-2.0.0-hb0f4dca_0.conda
+    MD5             087c83e6a36eef3c8b6532c21c4f2133
+    SHA256          d4200c7015c1fafd8fd1ed9ea706ae1e261a2a910f5b53f45949412342e7037a
    
     Dependencies:
      - libgcc >=15
-     - libstdcxx >=15
      - libprotobuf 3.*
+     - libstdcxx >=15
      - libprotobuf >=3.21.12,<3.22.0a0
    ```
 
-6. Install `q-kx-protobuf`.  Since it has third party dependencies such as `libprotobuf`, we add `conda-forge` to the channel list and qmamba will use that to fetch these dependencies, with `q-kx-protobuf` coming from the KX channel.
+6. Install `q-kx-protobuf`.  Since it has third party dependencies such as `libprotobuf`, we add `conda-forge` to the channel list and qmamba will use that to fetch these dependencies, with `q-kx-protobuf` coming from the `kx`  channel.
 
    ```
-   q)qmamba.install (`SPECS`CHANNEL)!(enlist "q-kx-protobuf";("https://kxdev.gitlab.io/kdbx/conda-channel/channel";"conda-forge"))
-   conda-forge/linux-64                                        Using cache
-   conda-forge/noarch                                          Using cache
+   q)qmamba.install (`SPECS`CHANNEL)!(enlist "q-kx-protobuf";("kx";"conda-forge"))
+   conda-forge/noarch                                  26.8MB @   3.3MB/s  8.1s
+   conda-forge/linux-64                                54.9MB @   5.1MB/s 10.7s
    
    
    Transaction
@@ -151,20 +142,20 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
       - q-kx-protobuf
    
    
-     Package          Version  Build        Channel                                          Size
-   ────────────────────────────────────────────────────────────────────────────────────────────────
+     Package          Version  Build        Channel           Size
+   ─────────────────────────────────────────────────────────────────
      Install:
-   ────────────────────────────────────────────────────────────────────────────────────────────────
+   ─────────────────────────────────────────────────────────────────
    
-     + _openmp_mutex      4.5  20_gnu       conda-forge                                    Cached
-     + q-kx-protobuf    1.1.0  hb0f4dca_0   kxdev.gitlab.io/kdbx/conda-channel/channel        3MB
-     + libgcc          15.2.0  he0feb66_19  conda-forge                                    Cached
-     + libgcc-ng       15.2.0  h69a702a_19  conda-forge                                    Cached
-     + libgomp         15.2.0  he0feb66_19  conda-forge                                    Cached
-     + libprotobuf    3.21.12  hfc55251_2   conda-forge                                       2MB
-     + libstdcxx       15.2.0  h934c35e_19  conda-forge                                    Cached
-     + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge                                    Cached
-     + libzlib          1.3.2  h25fd6f3_2   conda-forge                                    Cached
+     + _openmp_mutex      4.5  20_gnu       conda-forge     Cached
+     + libgcc          15.2.0  he0feb66_19  conda-forge     Cached
+     + libgcc-ng       15.2.0  h69a702a_19  conda-forge     Cached
+     + libgomp         15.2.0  he0feb66_19  conda-forge     Cached
+     + libprotobuf    3.21.12  hfc55251_2   conda-forge     Cached
+     + libstdcxx       15.2.0  h934c35e_19  conda-forge     Cached
+     + libstdcxx-ng    15.2.0  hdf11a46_19  conda-forge     Cached
+     + libzlib          1.3.2  h25fd6f3_2   conda-forge     Cached
+     + q-kx-protobuf    2.0.0  hb0f4dca_0   kx              Cached
    
      Summary:
    
@@ -172,7 +163,7 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
    
      Total download: 0 B
    
-   ────────────────────────────────────────────────────────────────────────────────────────────────
+   ─────────────────────────────────────────────────────────────────
    
    
    Confirm changes: [Y/n]
@@ -187,7 +178,7 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
    Linking libstdcxx-15.2.0-h934c35e_19
    Linking libstdcxx-ng-15.2.0-hdf11a46_19
    Linking libprotobuf-3.21.12-hfc55251_2
-   Linking q-kx-protobuf-1.1.0-hb0f4dca_0
+   Linking q-kx-protobuf-2.0.0-hb0f4dca_0
    
    Transaction finished
    ```
@@ -199,9 +190,8 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
    List of packages in environment: "/home/neal/qx/root/envs/test"
    
      Name           Version  Build        Channel
-   ───────────────────────────────────────────────────────────────────────────────────────────
+   ────────────────────────────────────────────────────
      _openmp_mutex  4.5      20_gnu       conda-forge
-     q-kx-protobuf  1.1.0    hb0f4dca_0   https://kxdev.gitlab.io/kdbx/conda-channel/channel
      libgcc         15.2.0   he0feb66_19  conda-forge
      libgcc-ng      15.2.0   h69a702a_19  conda-forge
      libgomp        15.2.0   he0feb66_19  conda-forge
@@ -209,21 +199,22 @@ A few concepts are extensively used in the subsequent documentation.  If you hav
      libstdcxx      15.2.0   h934c35e_19  conda-forge
      libstdcxx-ng   15.2.0   hdf11a46_19  conda-forge
      libzlib        1.3.2    h25fd6f3_2   conda-forge
+     q-kx-protobuf  2.0.0    hb0f4dca_0   kx
    ```
 
 8. Load `q-kx-protobuf` and start using it:
 
    ```
-      q)proto:use `kx.protobuf
-      q)proto.versionStr[]
-      "libprotobuf v3.21.12"
-      q)result:proto.serializeArrayFromList[`ScalarExample; (1i;2.2f;"abc")]
-      q)result
-      "\010\001\021\232\231\231\231\231\231\001@\032\003abc"
-      q)proto.parseArrayToList[`ScalarExample; result]
-      1i
-      2.2
-      "abc"
+   q)proto:use `kx.protobuf
+   q)proto.versionStr[]
+   "libprotobuf v3.21.12"
+   q)result:proto.serializeArrayFromList[`ScalarExample; (1i;2.2f;"abc")]
+   q)result
+   "\010\001\021\232\231\231\231\231\231\001@\032\003abc"
+   q)proto.parseArrayToList[`ScalarExample; result]
+   1i
+   2.2
+   "abc"
    ```
 
 

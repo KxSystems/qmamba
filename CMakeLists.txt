@@ -102,7 +102,7 @@ install(FILES "q/${MY_LIBRARY_NAME}.q"
        DESTINATION "${CMAKE_INSTALL_PREFIX}/${MY_LIBRARY_NAME}/mod/kx/${MY_LIBRARY_NAME}"
        RENAME "init.q")
 
-install(DIRECTORY examples licenses docs
+install(DIRECTORY licenses docs
        DESTINATION "${CMAKE_INSTALL_PREFIX}/${MY_LIBRARY_NAME}")
 
 install(FILES README.md mamba.webp LICENSE

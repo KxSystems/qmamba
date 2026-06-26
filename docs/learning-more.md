@@ -6,11 +6,11 @@
 
 All the qmamba APIs are described in the [function reference](reference.md), with each one detailing:
 
-* the calling syntax, including the shortcut
+* the calling syntax, including any shortcut
 * frequently used options for that operation
-* a basic example demonstrating of its use
+* a basic example demonstrating its use
 
-To start with you can focus on the most frequently used operations such are:
+To start with you can focus on the most frequently used operations such as:
 
 | **Name**                                  | **Description**                         |
 | ----------------------------------------- | --------------------------------------- |
@@ -28,9 +28,24 @@ To start with you can focus on the most frequently used operations such are:
 
 
 
+## Specifying channels
+
+For APIs such as [search](./reference.md#search) and [install](./reference.md#install), qmamba requires that all channels be explicitly specified using the `` `CHANNEL `` option.
+
+This is to help prevent the accidental use of the [Anaconda defaults channels](./troubleshooting.md#warning--libmamba-repoanacondacom-a-commercial-channel-hosted-by-anacondacom-is-used).
+
+Currently, two channels are applicable when installing kdb-x modules:
+
+* `kx` provides the KX owned modules
+* `conda-forge` is used to provide third party libraries, which are dependencies of some KX modules
+
+Additional channels should become available in future for other kdb-x module vendors and community contributions.
+
+
+
 ## Guidelines for the safe use of shared objects
 
-When you `use` a module containing a shared object, that shared object is loaded into kdb.  But typically a shared object will have dependencies on other libraries so those shared objects are also loaded.  This continues recursively with dependencies of dependencies being loaded and so on.  A large module can have therefore have a significant tree of dependencies (you can use [repoquery.depends](./reference.md#repoquerydepends) with the `` `RECURSIVE `` option to view these).
+When you `use` a module containing a shared object, that shared object is loaded into kdb.  But typically a shared object will have dependencies on other libraries so those shared objects are also loaded.  This continues recursively with dependencies of dependencies being loaded and so on.  A large module can therefore have a significant tree of dependencies (you can use [repoquery.depends](./reference.md#repoquerydepends) with the `` `RECURSIVE `` option to view these).
 
 When multiple such modules are loaded it is possible that parts of the dependency tree from one module will begin to intersect with the dependency tree of another module where they share common (sub) dependencies.  This can lead to problems if the two modules each require different versions of this common dependency.
 
@@ -38,8 +53,8 @@ It is recommended that only one version of a given library be loaded into the sa
 
 qmamba takes a similar approach by imposing guardrails around actions which are potentially unsafe:
 
-1. If you have already used a module from one environment then try to activate a different environment, qmamba will warn you not to use any modules from the new environment and prompt you whether to continue.  This is in case the modules being loaded from the new environment conflict with the already loaded modules from the old environment.  The correct way to handle this scenario is to install all the required modules into the *same* environment (such that libmamba can prevent versioning conflicts) then load all the modules from that environment.
-2. If you have already used a module from an environment then try to make changes to that same environment qmamba will warn you.  This is in case your changes impact (e.g. remove) any of the dependencies required by the already loaded modules.  The correct way to address this scenario is to have all the packages in your environment present and stable before loading anything so you don't subsequently have to change the environment.
+1. If you have already used a module from one environment then try to activate a different environment, qmamba will warn you not to use any modules from the new environment and prompt you whether to continue.  This is in case the modules being loaded from the new environment conflict with the already loaded modules from the old environment.  Instead you should install all the required modules into the *same* environment (such that libmamba can prevent versioning conflicts) then load all the modules from that environment.
+2. If you have already used a module from an environment then try to make changes to that same environment qmamba will warn you.  This is in case your changes impact (e.g. remove) any of the dependencies required by the already loaded modules.  Rather you should have all the packages in your environment present and stable before loading anything so you don't subsequently have to change the environment.
 
 But these guardrails cannot protect against all potential misuse.  One such example is an arbitrary module being loaded from an location which is not managed by qmamba.  Where a module is loaded from outside the active environment then qmamba/libmamba will have no knowledge of it (what dependencies it requires, where those dependencies are coming from, what versions of those dependencies are required, etc.) so has no information to act on.
 

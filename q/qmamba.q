@@ -67,7 +67,7 @@ env.update:{options:makeOptionsFile[x]; if [checkInUse[options]; :clib.env_updat
 
 // Active environments and SPs
 active:{clib.active[][`PREFIX]}
-searchPaths:{[prefix]$[count prefix; enlist (prefix, "/q/mod"); ()]}
+searchPaths:{[prefix]$[count prefix; enlist prefix, "/lib/q/mod"; ()]}
 activate:{
     if [x ~ `help; :clib.activate[x]];
 

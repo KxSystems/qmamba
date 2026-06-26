@@ -1,6 +1,6 @@
 # Concepts
 
-Adapted from the [libmamba documentation](https://mamba.readthedocs.io/en/latest/user_guide/concepts.html).
+Adapted from the [Mamba documentation](https://mamba.readthedocs.io/en/latest/user_guide/concepts.html).
 
 
 

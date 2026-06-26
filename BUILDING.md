@@ -13,8 +13,8 @@ From the root of repo run:
 ./build_linux.sh
 ```
 
-This will build `libmamba-static` from source and build `qmamba.so` using that.  
+This will build `libmamba-static` from source and build qmamba using that.  
 
-The package is then created in the install directory  `./build/install`.
+The package is then created in the install directory under `$GITHUB_ROOT/build/install/qmamba` from where the install script can be run.
 
 

@@ -14,7 +14,7 @@ q)arrow:use `kx.arrow
   [10] /root/qx/root/envs/arrow/q/mod/kx/arrow/init.q:2: clib:$[5<=.z.K;use`.clib;(`arrowkdb 2:(`kexport;1))[]]
 ```
 
-Are you setting `LD_LIBRARY_PATH` as requested when starting q?  Run `qmamba.showStartup[]` to display the message again.
+Are you setting `LD_LIBRARY_PATH` as required when starting q?  Run `qmamba.showStartup[]` to display the message again.
 
 If the problem persists you may need to [reinitialise the base environment](reference.md#initialiseroot).  By using the latest conda versions of these base packages, it maximises their compatibility with other conda packages, including the kdb-x modules.
 
@@ -58,7 +58,7 @@ p                                                             s| m
 This may cause unpredictable results if the changes affect those modules or their dependencies.
 ```
 
-This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you are confident there will be a problem then it can be ignored.  To suppress this warning set the `GUARD_IN_USE` option to `"permit"` when calling the API.
+This warning is one of the guardrails around [potentially unsafe actions](./learning-more.md#guidelines-for-the-safe-use-of-shared-objects).  If you are confident there won't be a problem then it can be ignored.  To suppress this warning set the `GUARD_IN_USE` option to `"permit"` when calling the API.
 
 
 
@@ -102,11 +102,22 @@ Try setting the `VERBOSE` option to 1 or 2 (with increasing verbosity).  The ext
 
 ## Using the Anaconda `defaults` channels
 
-Not recommended as the libmamba docs [explain](https://mamba.readthedocs.io/en/latest/user_guide/troubleshooting.html#using-the-defaults-channels).
+Not recommended as the Mamba docs [explain](https://mamba.readthedocs.io/en/latest/user_guide/troubleshooting.html#using-the-defaults-channels).
 
 
 
 ## Mixing the Anaconda `defaults` and `conda-forge` channels
 
-Not recommended as the libmamba docs [explain](https://mamba.readthedocs.io/en/latest/user_guide/troubleshooting.html#mixing-the-defaults-and-conda-forge-channels).
+Not recommended as the Mamba docs [explain](https://mamba.readthedocs.io/en/latest/user_guide/troubleshooting.html#mixing-the-defaults-and-conda-forge-channels).
+
+
+
+## warning  libmamba 'repo.anaconda.com', a commercial channel hosted by Anaconda.com, is used.
+
+You have specified `defaults` or `pkgs/*` in your channels list.  These are the Anaconda commercial channels and their use is is [not recommended](#using-the-anaconda-defaults-channels).
+
+Rather, you should use `conda-forge` to source dependencies:
+
+* The kdb-x modules are built using `conda-forge` for dependencies and the Anaconda `defaults` channels  are [incompatible](#mixing-the-anaconda-defaults-and-conda-forge-channels)  with `conda-forge`.
+* Unlike the Anaconda `defaults` channels, `conda-forge` is not subject to a commercial use policy.
 
